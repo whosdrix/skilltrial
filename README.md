@@ -21,6 +21,13 @@ npx skilltrial init                     # writes a starter skilltrial.yaml
 npx skilltrial run ./skills/my-skill    # runs every task with and without the skill
 ```
 
+<p align="center">
+  <img src=".github/assets/arms.png" width="49%" alt="Paired. Shuffled. Fair.">
+  <img src=".github/assets/stats.png" width="49%" alt="+32 points, with a range.">
+  <img src=".github/assets/report.png" width="49%" alt="Every run, every diff.">
+  <img src=".github/assets/ci.png" width="49%" alt="Fails CI on a regression.">
+</p>
+
 ## A real trial
 
 The [`examples/changelog`](examples/changelog) skill teaches one house rule: every change gets a line in `CHANGELOG.md`. Two tasks, a bug fix and a new function, five runs per arm, Claude Code with Haiku:
@@ -169,6 +176,10 @@ The summary table is written to the job summary. Set `min-lift: 10` to fail unle
 ```
 
 `skilltrial report results.json` rebuilds the HTML from saved results.
+
+<p align="center">
+  <img src=".github/assets/report-screenshot.png" alt="The skilltrial report card for the changelog example: +32 points with the confidence interval drawn on a scale, and pass rate, score, cost and time for each arm" width="760">
+</p>
 
 To show the badge in your skill's README, commit `badge.svg`, or commit `badge.json` and point shields.io at it:
 
