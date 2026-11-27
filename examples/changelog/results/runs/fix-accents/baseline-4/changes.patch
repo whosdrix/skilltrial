@@ -1,0 +1,24 @@
+diff --git a/src/index.js b/src/index.js
+index 553f57d..d533a68 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -1,5 +1,7 @@
+ export function slugify(input) {
+   return input
++    .normalize('NFD')
++    .replace(/\p{M}/gu, '')
+     .toLowerCase()
+     .replace(/[^a-z0-9]+/g, '-')
+     .replace(/^-+|-+$/g, '')
+diff --git a/test/index.test.js b/test/index.test.js
+index ade441d..f80a1d0 100644
+--- a/test/index.test.js
++++ b/test/index.test.js
+@@ -4,6 +4,7 @@ import { capitalize, slugify } from '../src/index.js'
+ 
+ test('slugify', () => {
+   assert.equal(slugify('Hello, World!'), 'hello-world')
++  assert.equal(slugify('Crème brûlée'), 'creme-brulee')
+ })
+ 
+ test('capitalize', () => {

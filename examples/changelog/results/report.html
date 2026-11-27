@@ -1,0 +1,827 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>changelog · skilltrial</title>
+<style>
+:root{--bg:#0b1020;--panel:#111833;--line:#1f2a4d;--text:#e6ebff;--dim:#8d97bd;--blue:#4f8cff;--green:#3fb950;--red:#f85149;--amber:#d29922;--mono:ui-monospace,"JetBrains Mono",SFMono-Regular,Menlo,monospace}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(1200px 600px at 10% -10%,#1a2550 0%,transparent 60%),var(--bg);color:var(--text);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:1080px;margin:0 auto;padding:40px 20px 80px}
+.kicker{font:600 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--blue)}
+h1{font-size:40px;line-height:1.1;margin:8px 0 6px;letter-spacing:-.02em}
+.desc{color:var(--dim);max-width:720px;margin:0 0 14px}
+.metarow{display:flex;flex-wrap:wrap;gap:8px 18px;color:var(--dim);font:13px var(--mono)}
+.verdict{margin:28px 0;padding:24px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,#131c3d,#0f1630);position:relative;overflow:hidden}
+.verdict::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:var(--blue)}
+.verdict .big{font-size:56px;font-weight:700;letter-spacing:-.03em;line-height:1}
+.verdict.helps .big{color:var(--green)}.verdict.hurts .big{color:var(--red)}.verdict.unclear .big{color:var(--amber)}
+.verdict p{margin:10px 0 0;font-size:17px}
+.ci{position:relative;height:34px;margin:18px 0 6px}
+.ci .axis{position:absolute;top:12px;left:0;right:0;height:2px;background:var(--line)}
+.ci .zero{position:absolute;top:4px;left:50%;width:1px;height:18px;background:var(--dim)}
+.ci .range{position:absolute;top:8px;height:10px;border-radius:5px;background:var(--amber);opacity:.55}
+.ci.helps .range{background:var(--green)}.ci.hurts .range{background:var(--red)}
+.ci .dot{position:absolute;top:6px;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:var(--text);border:3px solid var(--bg)}
+.ci .tick{position:absolute;top:20px;font:11px var(--mono);color:var(--dim)}
+.ci .l{left:0}.ci .m{left:50%;transform:translateX(-50%)}.ci .r{right:0}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px}
+.stat .label{color:var(--dim);font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+.stat .pair{display:flex;justify-content:space-between;gap:8px;margin:6px 0;font:600 20px var(--mono)}
+.stat .pair small{display:block;font:500 11px Inter,system-ui,sans-serif;color:var(--dim);text-transform:none;letter-spacing:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:110px}
+.stat .delta{font:12px var(--mono);color:var(--dim)}
+h2{font-size:22px;margin:40px 0 4px}
+.task{margin:22px 0;padding:20px;border:1px solid var(--line);border-radius:16px;background:rgba(17,24,51,.6)}
+.task header{display:flex;align-items:center;gap:12px}
+.task h3{margin:0;font:600 18px var(--mono)}
+.pill{font:600 11px var(--mono);text-transform:uppercase;padding:3px 8px;border-radius:999px;border:1px solid currentColor}
+.pill.helps{color:var(--green)}.pill.hurts{color:var(--red)}.pill.unclear{color:var(--amber)}
+.lift{margin-left:auto;font:700 20px var(--mono)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.cols h4{margin:8px 0;color:var(--dim);font-weight:600}
+.run{background:var(--panel);border:1px solid var(--line);border-radius:10px;margin:8px 0;padding:0 12px}
+.run>summary{cursor:pointer;display:flex;align-items:center;gap:10px;padding:10px 0;list-style:none}
+.run>summary::-webkit-details-marker{display:none}
+.run .badge{font:600 10px var(--mono);text-transform:uppercase;padding:2px 6px;border-radius:4px;background:#2a334f}
+.run.pass .badge{background:rgba(63,185,80,.18);color:var(--green)}.run.fail .badge{background:rgba(248,81,73,.18);color:var(--red)}.run.partial .badge{background:rgba(210,153,34,.18);color:var(--amber)}
+.run .score{font:600 14px var(--mono)}.run .meta{margin-left:auto;color:var(--dim);font:12px var(--mono)}
+.checks{list-style:none;margin:0;padding:0 0 10px}
+.checks li{padding:3px 0;font-size:13px}
+.checks .mark{display:inline-block;width:18px}.checks .pass .mark{color:var(--green)}.checks .fail .mark{color:var(--red)}
+.checks .cname{font-family:var(--mono)}.checks .jscore{margin-left:8px;color:var(--blue);font:600 12px var(--mono)}
+.checks .detail{margin:2px 0 4px 18px;color:var(--dim);white-space:pre-wrap;font:12px var(--mono);max-height:160px;overflow:auto}
+.error{color:var(--red);font:12px var(--mono);white-space:pre-wrap;margin-bottom:8px}
+.files{padding-bottom:10px}.files code{font-size:11px;background:#1a2242;padding:1px 5px;border-radius:4px;display:inline-block;margin:2px 0}
+.patch{padding-bottom:10px}.patch summary{cursor:pointer;color:var(--blue);font:12px var(--mono)}
+.patch pre{max-height:420px;overflow:auto;background:#070b18;border:1px solid var(--line);border-radius:8px;padding:10px;font:11.5px/1.45 var(--mono);white-space:pre}
+footer{margin-top:48px;color:var(--dim);font:12px var(--mono);border-top:1px solid var(--line);padding-top:16px}
+footer a{color:var(--blue)}
+@media (max-width:760px){.stats{grid-template-columns:1fr 1fr}.cols{grid-template-columns:1fr}h1{font-size:30px}.verdict .big{font-size:42px}}
+</style>
+</head>
+<body>
+<main>
+<div class="kicker">skilltrial report</div>
+<h1>changelog</h1>
+<p class="desc">Keep CHANGELOG.md up to date. Use whenever you change behavior in a project that has a CHANGELOG.md.</p>
+<div class="metarow"><span>claude-code · haiku · v2.1.332</span><span>5 runs per arm</span><span>2 tasks</span><span>seed 2026</span><span>2026-11-27 18:49 UTC</span></div>
+
+<div class="verdict helps">
+<div class="big">+32 pts</div>
+<p>changelog helps: score +32 points (95% CI +22 to +42) over no skill.</p>
+<div class="ci helps" title="95% CI +22 to +42">
+  <div class="axis"></div><div class="zero"></div>
+  <div class="range" style="left:60.83333333333334%;width:10%"></div>
+  <div class="dot" style="left:65.83333333333333%"></div>
+  <span class="tick l">−100</span><span class="tick m">0</span><span class="tick r">+100</span>
+</div>
+</div>
+<div class="stats">
+<div class="stat"><div class="label">Pass rate</div><div class="pair"><span><small>no skill</small>0%</span><span><small>changelog</small>80%</span></div><div class="delta">+80 pts · CI +38 to +94</div></div>
+<div class="stat"><div class="label">Mean score</div><div class="pair"><span><small>no skill</small>58%</span><span><small>changelog</small>90%</span></div><div class="delta">+32 pts · CI +22 to +42</div></div>
+<div class="stat"><div class="label">Median cost</div><div class="pair"><span><small>no skill</small>$0.0028</span><span><small>changelog</small>$0.0032</span></div><div class="delta">+$0.0004</div></div>
+<div class="stat"><div class="label">Median time</div><div class="pair"><span><small>no skill</small>9.2s</span><span><small>changelog</small>11s</span></div><div class="delta">+2.0s</div></div>
+</div>
+
+<h2>Tasks</h2>
+<section class="task">
+<header><h3>fix-accents</h3><span class="pill helps">helps</span><span class="lift">+33 pts</span></header>
+<div class="ci helps" title="95% CI +33 to +33">
+  <div class="axis"></div><div class="zero"></div>
+  <div class="range" style="left:66.66666666666667%;width:0.6%"></div>
+  <div class="dot" style="left:66.66666666666667%"></div>
+  <span class="tick l">−100</span><span class="tick m">0</span><span class="tick r">+100</span>
+</div>
+<div class="stats">
+<div class="stat"><div class="label">Pass rate</div><div class="pair"><span><small>no skill</small>0%</span><span><small>changelog</small>100%</span></div><div class="delta">+100 pts · CI +39 to +100</div></div>
+<div class="stat"><div class="label">Mean score</div><div class="pair"><span><small>no skill</small>67%</span><span><small>changelog</small>100%</span></div><div class="delta">+33 pts · CI +33 to +33</div></div>
+<div class="stat"><div class="label">Median cost</div><div class="pair"><span><small>no skill</small>$0.0028</span><span><small>changelog</small>$0.0032</span></div><div class="delta">+$0.0004</div></div>
+<div class="stat"><div class="label">Median time</div><div class="pair"><span><small>no skill</small>9.2s</span><span><small>changelog</small>11s</span></div><div class="delta">+1.7s</div></div>
+</div>
+<div class="cols"><div><h4>no skill</h4><details class="run partial">
+<summary><span class="badge">partial</span><b>#1</b><span class="score">67%</span><span class="meta">8.6s · $0.0028 · 2 files</span></summary>
+
+<ul class="checks"><li class="pass"><span class="mark">✓</span><span class="cname">accents are stripped</span></li><li class="pass"><span class="mark">✓</span><span class="cname">existing tests pass</span></li><li class="fail"><span class="mark">✗</span><span class="cname">changelog has a Fixed entry</span><div class="detail">exit 1
+</div></li></ul>
+<div class="files"><code>src/index.js</code> <code>test/index.test.js</code></div>
+<details class="patch"><summary>diff (+3 −0)</summary><pre>diff --git a/src/index.js b/src/index.js
+index 553f57d..cdc30ff 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -1,5 +1,7 @@
+ export function slugify(input) {
+   return input
++    .normalize(&#39;NFKD&#39;)
++    .replace(/[̀-ͯ]/g, &#39;&#39;)
+     .toLowerCase()
+     .replace(/[^a-z0-9]+/g, &#39;-&#39;)
+     .replace(/^-+|-+$/g, &#39;&#39;)
+diff --git a/test/index.test.js b/test/index.test.js
+index ade441d..f80a1d0 100644
+--- a/test/index.test.js
++++ b/test/index.test.js
+@@ -4,6 +4,7 @@ import { capitalize, slugify } from &#39;../src/index.js&#39;
+ 
+ test(&#39;slugify&#39;, () =&gt; {
+   assert.equal(slugify(&#39;Hello, World!&#39;), &#39;hello-world&#39;)
++  assert.equal(slugify(&#39;Crème brûlée&#39;), &#39;creme-brulee&#39;)
+ })
+ 
+ test(&#39;capitalize&#39;, () =&gt; {
+</pre></details>
+</details>
+<details class="run partial">
+<summary><span class="badge">partial</span><b>#2</b><span class="score">67%</span><span class="meta">9.2s · $0.0028 · 2 files</span></summary>
+
+<ul class="checks"><li class="pass"><span class="mark">✓</span><span class="cname">accents are stripped</span></li><li class="pass"><span class="mark">✓</span><span class="cname">existing tests pass</span></li><li class="fail"><span class="mark">✗</span><span class="cname">changelog has a Fixed entry</span><div class="detail">exit 1
+</div></li></ul>
+<div class="files"><code>src/index.js</code> <code>test/index.test.js</code></div>
+<details class="patch"><summary>diff (+3 −0)</summary><pre>diff --git a/src/index.js b/src/index.js
+index 553f57d..0ff0fcd 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -1,5 +1,7 @@
+ export function slugify(input) {
+   return input
++    .normalize(&#39;NFKD&#39;)
++    .replace(/\p{M}/gu, &#39;&#39;)
+     .toLowerCase()
+     .replace(/[^a-z0-9]+/g, &#39;-&#39;)
+     .replace(/^-+|-+$/g, &#39;&#39;)
+diff --git a/test/index.test.js b/test/index.test.js
+index ade441d..f80a1d0 100644
+--- a/test/index.test.js
++++ b/test/index.test.js
+@@ -4,6 +4,7 @@ import { capitalize, slugify } from &#39;../src/index.js&#39;
+ 
+ test(&#39;slugify&#39;, () =&gt; {
+   assert.equal(slugify(&#39;Hello, World!&#39;), &#39;hello-world&#39;)
++  assert.equal(slugify(&#39;Crème brûlée&#39;), &#39;creme-brulee&#39;)
+ })
+ 
+ test(&#39;capitalize&#39;, () =&gt; {
+</pre></details>
+</details>
+<details class="run partial">
+<summary><span class="badge">partial</span><b>#3</b><span class="score">67%</span><span class="meta">7.9s · $0.0027 · 2 files</span></summary>
+
+<ul class="checks"><li class="pass"><span class="mark">✓</span><span class="cname">accents are stripped</span></li><li class="pass"><span class="mark">✓</span><span class="cname">existing tests pass</span></li><li class="fail"><span class="mark">✗</span><span class="cname">changelog has a Fixed entry</span><div class="detail">exit 1
+</div></li></ul>
+<div class="files"><code>src/index.js</code> <code>test/index.test.js</code></div>
+<details class="patch"><summary>diff (+3 −0)</summary><pre>diff --git a/src/index.js b/src/index.js
+index 553f57d..cdc30ff 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -1,5 +1,7 @@
+ export function slugify(input) {
+   return input
++    .normalize(&#39;NFKD&#39;)
++    .replace(/[̀-ͯ]/g, &#39;&#39;)
+     .toLowerCase()
+     .replace(/[^a-z0-9]+/g, &#39;-&#39;)
+     .replace(/^-+|-+$/g, &#39;&#39;)
+diff --git a/test/index.test.js b/test/index.test.js
+index ade441d..f80a1d0 100644
+--- a/test/index.test.js
++++ b/test/index.test.js
+@@ -4,6 +4,7 @@ import { capitalize, slugify } from &#39;../src/index.js&#39;
+ 
+ test(&#39;slugify&#39;, () =&gt; {
+   assert.equal(slugify(&#39;Hello, World!&#39;), &#39;hello-world&#39;)
++  assert.equal(slugify(&#39;Crème brûlée&#39;), &#39;creme-brulee&#39;)
+ })
+ 
+ test(&#39;capitalize&#39;, () =&gt; {
+</pre></details>
+</details>
+<details class="run partial">
+<summary><span class="badge">partial</span><b>#4</b><span class="score">67%</span><span class="meta">10s · $0.0033 · 2 files</span></summary>
+
+<ul class="checks"><li class="pass"><span class="mark">✓</span><span class="cname">accents are stripped</span></li><li class="pass"><span class="mark">✓</span><span class="cname">existing tests pass</span></li><li class="fail"><span class="mark">✗</span><span class="cname">changelog has a Fixed entry</span><div class="detail">exit 1
+</div></li></ul>
+<div class="files"><code>src/index.js</code> <code>test/index.test.js</code></div>
+<details class="patch"><summary>diff (+3 −0)</summary><pre>diff --git a/src/index.js b/src/index.js
+index 553f57d..d533a68 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -1,5 +1,7 @@
+ export function slugify(input) {
+   return input
++    .normalize(&#39;NFD&#39;)
++    .replace(/\p{M}/gu, &#39;&#39;)
+     .toLowerCase()
+     .replace(/[^a-z0-9]+/g, &#39;-&#39;)
+     .replace(/^-+|-+$/g, &#39;&#39;)
+diff --git a/test/index.test.js b/test/index.test.js
+index ade441d..f80a1d0 100644
+--- a/test/index.test.js
++++ b/test/index.test.js
+@@ -4,6 +4,7 @@ import { capitalize, slugify } from &#39;../src/index.js&#39;
+ 
+ test(&#39;slugify&#39;, () =&gt; {
+   assert.equal(slugify(&#39;Hello, World!&#39;), &#39;hello-world&#39;)
++  assert.equal(slugify(&#39;Crème brûlée&#39;), &#39;creme-brulee&#39;)
+ })
+ 
+ test(&#39;capitalize&#39;, () =&gt; {
+</pre></details>
+</details>
+<details class="run partial">
+<summary><span class="badge">partial</span><b>#5</b><span class="score">67%</span><span class="meta">10s · $0.0028 · 2 files</span></summary>
+
+<ul class="checks"><li class="pass"><span class="mark">✓</span><span class="cname">accents are stripped</span></li><li class="pass"><span class="mark">✓</span><span class="cname">existing tests pass</span></li><li class="fail"><span class="mark">✗</span><span class="cname">changelog has a Fixed entry</span><div class="detail">exit 1
+</div></li></ul>
+<div class="files"><code>src/index.js</code> <code>test/index.test.js</code></div>
+<details class="patch"><summary>diff (+3 −0)</summary><pre>diff --git a/src/index.js b/src/index.js
+index 553f57d..0ff0fcd 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -1,5 +1,7 @@
+ export function slugify(input) {
+   return input
++    .normalize(&#39;NFKD&#39;)
++    .replace(/\p{M}/gu, &#39;&#39;)
+     .toLowerCase()
+     .replace(/[^a-z0-9]+/g, &#39;-&#39;)
+     .replace(/^-+|-+$/g, &#39;&#39;)
+diff --git a/test/index.test.js b/test/index.test.js
+index ade441d..f80a1d0 100644
+--- a/test/index.test.js
++++ b/test/index.test.js
+@@ -4,6 +4,7 @@ import { capitalize, slugify } from &#39;../src/index.js&#39;
+ 
+ test(&#39;slugify&#39;, () =&gt; {
+   assert.equal(slugify(&#39;Hello, World!&#39;), &#39;hello-world&#39;)
++  assert.equal(slugify(&#39;Crème brûlée&#39;), &#39;creme-brulee&#39;)
+ })
+ 
+ test(&#39;capitalize&#39;, () =&gt; {
+</pre></details>
+</details></div><div><h4>changelog</h4><details class="run pass">
+<summary><span class="badge">pass</span><b>#1</b><span class="score">100%</span><span class="meta">9.0s · $0.0031 · 3 files</span></summary>
+
+<ul class="checks"><li class="pass"><span class="mark">✓</span><span class="cname">accents are stripped</span></li><li class="pass"><span class="mark">✓</span><span class="cname">existing tests pass</span></li><li class="pass"><span class="mark">✓</span><span class="cname">changelog has a Fixed entry</span></li></ul>
+<div class="files"><code>CHANGELOG.md</code> <code>src/index.js</code> <code>test/index.test.js</code></div>
+<details class="patch"><summary>diff (+7 −0)</summary><pre>diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 8a0ff46..4272099 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -4,6 +4,10 @@ All notable changes to this project are documented here.
+ 
+ ## [Unreleased]
+ 
++### Fixed
++
++- `slugify()` now strips accents, so `&quot;Crème brûlée&quot;` becomes `creme-brulee` instead of `cr-me-br-l-e`.
++
+ ## [1.2.0] - 2026-10-02
+ 
+ ### Added
+diff --git a/src/index.js b/src/index.js
+index 553f57d..7e293d4 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -1,5 +1,7 @@
+ export function slugify(input) {
+   return input
++    .normalize(&#39;NFD&#39;)
++    .replace(/[̀-ͯ]/g, &#39;&#39;)
+     .toLowerCase()
+     .replace(/[^a-z0-9]+/g, &#39;-&#39;)
+     .replace(/^-+|-+$/g, &#39;&#39;)
+diff --git a/test/index.test.js b/test/index.test.js
+index ade441d..f80a1d0 100644
+--- a/test/index.test.js
++++ b/test/index.test.js
+@@ -4,6 +4,7 @@ import { capitalize, slugify } from &#39;../src/index.js&#39;
+ 
+ test(&#39;slugify&#39;, () =&gt; {
+   assert.equal(slugify(&#39;Hello, World!&#39;), &#39;hello-world&#39;)
++  assert.equal(slugify(&#39;Crème brûlée&#39;), &#39;creme-brulee&#39;)
+ })
+ 
+ test(&#39;capitalize&#39;, () =&gt; {
+</pre></details>
+</details>
+<details class="run pass">
+<summary><span class="badge">pass</span><b>#2</b><span class="score">100%</span><span class="meta">11s · $0.0032 · 3 files</span></summary>
+
+<ul class="checks"><li class="pass"><span class="mark">✓</span><span class="cname">accents are stripped</span></li><li class="pass"><span class="mark">✓</span><span class="cname">existing tests pass</span></li><li class="pass"><span class="mark">✓</span><span class="cname">changelog has a Fixed entry</span></li></ul>
+<div class="files"><code>CHANGELOG.md</code> <code>src/index.js</code> <code>test/index.test.js</code></div>
+<details class="patch"><summary>diff (+8 −0)</summary><pre>diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 8a0ff46..c61ce14 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -4,6 +4,10 @@ All notable changes to this project are documented here.
+ 
+ ## [Unreleased]
+ 
++### Fixed
++
++- `slugify()` now transliterates accented letters to their base letters, so `&quot;Crème brûlée&quot;` becomes `creme-brulee` instead of `cr-me-br-l-e`.
++
+ ## [1.2.0] - 2026-10-02
+ 
+ ### Added
+diff --git a/src/index.js b/src/index.js
+index 553f57d..cdc30ff 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -1,5 +1,7 @@
+ export function slugify(input) {
+   return input
++    .normalize(&#39;NFKD&#39;)
++    .replace(/[̀-ͯ]/g, &#39;&#39;)
+     .toLowerCase()
+     .replace(/[^a-z0-9]+/g, &#39;-&#39;)
+     .replace(/^-+|-+$/g, &#39;&#39;)
+diff --git a/test/index.test.js b/test/index.test.js
+index ade441d..eb296f0 100644
+--- a/test/index.test.js
++++ b/test/index.test.js
+@@ -4,6 +4,8 @@ import { capitalize, slugify } from &#39;../src/index.js&#39;
+ 
+ test(&#39;slugify&#39;, () =&gt; {
+   assert.equal(slugify(&#39;Hello, World!&#39;), &#39;hello-world&#39;)
++  assert.equal(slugify(&#39;Crème brûlée&#39;), &#39;creme-brulee&#39;)
++  assert.equal(slugify(&#39;Ångström Éclair&#39;), &#39;angstrom-eclair&#39;)
+ })
+ 
+ test(&#39;capitalize&#39;, () =&gt; {
+</pre></details>
+</details>
+<details class="run pass">
+<summary><span class="badge">pass</span><b>#3</b><span class="score">100%</span><span class="meta">16s · $0.0046 · 3 files</span></summary>
+
+<ul class="checks"><li class="pass"><span class="mark">✓</span><span class="cname">accents are stripped</span></li><li class="pass"><span class="mark">✓</span><span class="cname">existing tests pass</span></li><li class="pass"><span class="mark">✓</span><span class="cname">changelog has a Fixed entry</span></li></ul>
+<div class="files"><code>CHANGELOG.md</code> <code>src/index.js</code> <code>test/index.test.js</code></div>
+<details class="patch"><summary>diff (+7 −0)</summary><pre>diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 8a0ff46..4272099 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -4,6 +4,10 @@ All notable changes to this project are documented here.
+ 
+ ## [Unreleased]
+ 
++### Fixed
++
++- `slugify()` now strips accents, so `&quot;Crème brûlée&quot;` becomes `creme-brulee` instead of `cr-me-br-l-e`.
++
+ ## [1.2.0] - 2026-10-02
+ 
+ ### Added
+diff --git a/src/index.js b/src/index.js
+index 553f57d..d533a68 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -1,5 +1,7 @@
+ export function slugify(input) {
+   return input
++    .normalize(&#39;NFD&#39;)
++    .replace(/\p{M}/gu, &#39;&#39;)
+     .toLowerCase()
+     .replace(/[^a-z0-9]+/g, &#39;-&#39;)
+     .replace(/^-+|-+$/g, &#39;&#39;)
+diff --git a/test/index.test.js b/test/index.test.js
+index ade441d..f80a1d0 100644
+--- a/test/index.test.js
++++ b/test/index.test.js
+@@ -4,6 +4,7 @@ import { capitalize, slugify } from &#39;../src/index.js&#39;
+ 
+ test(&#39;slugify&#39;, () =&gt; {
+   assert.equal(slugify(&#39;Hello, World!&#39;), &#39;hello-world&#39;)
++  assert.equal(slugify(&#39;Crème brûlée&#39;), &#39;creme-brulee&#39;)
+ })
+ 
+ test(&#39;capitalize&#39;, () =&gt; {
+</pre></details>
+</details>
+<details class="run pass">
+<summary><span class="badge">pass</span><b>#4</b><span class="score">100%</span><span class="meta">9.7s · $0.0031 · 3 files</span></summary>
+
+<ul class="checks"><li class="pass"><span class="mark">✓</span><span class="cname">accents are stripped</span></li><li class="pass"><span class="mark">✓</span><span class="cname">existing tests pass</span></li><li class="pass"><span class="mark">✓</span><span class="cname">changelog has a Fixed entry</span></li></ul>
+<div class="files"><code>CHANGELOG.md</code> <code>src/index.js</code> <code>test/index.test.js</code></div>
+<details class="patch"><summary>diff (+7 −0)</summary><pre>diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 8a0ff46..c9c903c 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -4,6 +4,10 @@ All notable changes to this project are documented here.
+ 
+ ## [Unreleased]
+ 
++### Fixed
++
++- `slugify()` now strips accents, so `&quot;Crème brûlée&quot;` becomes `&quot;creme-brulee&quot;`.
++
+ ## [1.2.0] - 2026-10-02
+ 
+ ### Added
+diff --git a/src/index.js b/src/index.js
+index 553f57d..7e293d4 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -1,5 +1,7 @@
+ export function slugify(input) {
+   return input
++    .normalize(&#39;NFD&#39;)
++    .replace(/[̀-ͯ]/g, &#39;&#39;)
+     .toLowerCase()
+     .replace(/[^a-z0-9]+/g, &#39;-&#39;)
+     .replace(/^-+|-+$/g, &#39;&#39;)
+diff --git a/test/index.test.js b/test/index.test.js
+index ade441d..f80a1d0 100644
+--- a/test/index.test.js
++++ b/test/index.test.js
+@@ -4,6 +4,7 @@ import { capitalize, slugify } from &#39;../src/index.js&#39;
+ 
+ test(&#39;slugify&#39;, () =&gt; {
+   assert.equal(slugify(&#39;Hello, World!&#39;), &#39;hello-world&#39;)
++  assert.equal(slugify(&#39;Crème brûlée&#39;), &#39;creme-brulee&#39;)
+ })
+ 
+ test(&#39;capitalize&#39;, () =&gt; {
+</pre></details>
+</details>
+<details class="run pass">
+<summary><span class="badge">pass</span><b>#5</b><span class="score">100%</span><span class="meta">11s · $0.0032 · 3 files</span></summary>
+
+<ul class="checks"><li class="pass"><span class="mark">✓</span><span class="cname">accents are stripped</span></li><li class="pass"><span class="mark">✓</span><span class="cname">existing tests pass</span></li><li class="pass"><span class="mark">✓</span><span class="cname">changelog has a Fixed entry</span></li></ul>
+<div class="files"><code>CHANGELOG.md</code> <code>src/index.js</code> <code>test/index.test.js</code></div>
+<details class="patch"><summary>diff (+7 −0)</summary><pre>diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 8a0ff46..f0c1004 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -4,6 +4,10 @@ All notable changes to this project are documented here.
+ 
+ ## [Unreleased]
+ 
++### Fixed
++
++- `slugify()` now strips accents, so `&quot;Crème brûlée&quot;` becomes `&quot;creme-brulee&quot;` instead of `&quot;cr-me-br-l-e&quot;`.
++
+ ## [1.2.0] - 2026-10-02
+ 
+ ### Added
+diff --git a/src/index.js b/src/index.js
+index 553f57d..7e293d4 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -1,5 +1,7 @@
+ export function slugify(input) {
+   return input
++    .normalize(&#39;NFD&#39;)
++    .replace(/[̀-ͯ]/g, &#39;&#39;)
+     .toLowerCase()
+     .replace(/[^a-z0-9]+/g, &#39;-&#39;)
+     .replace(/^-+|-+$/g, &#39;&#39;)
+diff --git a/test/index.test.js b/test/index.test.js
+index ade441d..f80a1d0 100644
+--- a/test/index.test.js
++++ b/test/index.test.js
+@@ -4,6 +4,7 @@ import { capitalize, slugify } from &#39;../src/index.js&#39;
+ 
+ test(&#39;slugify&#39;, () =&gt; {
+   assert.equal(slugify(&#39;Hello, World!&#39;), &#39;hello-world&#39;)
++  assert.equal(slugify(&#39;Crème brûlée&#39;), &#39;creme-brulee&#39;)
+ })
+ 
+ test(&#39;capitalize&#39;, () =&gt; {
+</pre></details>
+</details></div></div>
+</section>
+<section class="task">
+<header><h3>add-truncate</h3><span class="pill helps">helps</span><span class="lift">+30 pts</span></header>
+<div class="ci helps" title="95% CI +10 to +50">
+  <div class="axis"></div><div class="zero"></div>
+  <div class="range" style="left:55.00000000000001%;width:19.999999999999993%"></div>
+  <div class="dot" style="left:65%"></div>
+  <span class="tick l">−100</span><span class="tick m">0</span><span class="tick r">+100</span>
+</div>
+<div class="stats">
+<div class="stat"><div class="label">Pass rate</div><div class="pair"><span><small>no skill</small>0%</span><span><small>changelog</small>60%</span></div><div class="delta">+60 pts · CI +3 to +88</div></div>
+<div class="stat"><div class="label">Mean score</div><div class="pair"><span><small>no skill</small>50%</span><span><small>changelog</small>80%</span></div><div class="delta">+30 pts · CI +10 to +50</div></div>
+<div class="stat"><div class="label">Median cost</div><div class="pair"><span><small>no skill</small>$0.0026</span><span><small>changelog</small>$0.0033</span></div><div class="delta">+$0.0007</div></div>
+<div class="stat"><div class="label">Median time</div><div class="pair"><span><small>no skill</small>9.3s</span><span><small>changelog</small>12s</span></div><div class="delta">+2.9s</div></div>
+</div>
+<div class="cols"><div><h4>no skill</h4><details class="run partial">
+<summary><span class="badge">partial</span><b>#1</b><span class="score">50%</span><span class="meta">7.6s · $0.0023 · 1 files</span></summary>
+
+<ul class="checks"><li class="pass"><span class="mark">✓</span><span class="cname">truncate works</span></li><li class="pass"><span class="mark">✓</span><span class="cname">existing tests pass</span></li><li class="fail"><span class="mark">✗</span><span class="cname">changelog has an Added entry</span><div class="detail">exit 1
+</div></li><li class="fail"><span class="mark">✗</span><span class="cname">entry is written for users</span><span class="jscore">0/10</span><div class="detail">0/10. The [Unreleased] section of CHANGELOG.md is empty; the truncate() addition is not recorded, so there is no new entry under any heading.</div></li></ul>
+<div class="files"><code>src/index.js</code></div>
+<details class="patch"><summary>diff (+6 −0)</summary><pre>diff --git a/src/index.js b/src/index.js
+index 553f57d..4d79756 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -8,3 +8,9 @@ export function slugify(input) {
+ export function capitalize(input) {
+   return input.charAt(0).toUpperCase() + input.slice(1)
+ }
++
++export function truncate(text, max) {
++  if (text.length &lt;= max) return text
++  if (max &lt;= 0) return &#39;&#39;
++  return text.slice(0, max - 1) + &#39;…&#39;
++}
+</pre></details>
+</details>
+<details class="run partial">
+<summary><span class="badge">partial</span><b>#2</b><span class="score">50%</span><span class="meta">9.6s · $0.0029 · 1 files</span></summary>
+
+<ul class="checks"><li class="pass"><span class="mark">✓</span><span class="cname">truncate works</span></li><li class="pass"><span class="mark">✓</span><span class="cname">existing tests pass</span></li><li class="fail"><span class="mark">✗</span><span class="cname">changelog has an Added entry</span><div class="detail">exit 1
+</div></li><li class="fail"><span class="mark">✗</span><span class="cname">entry is written for users</span><span class="jscore">0/10</span><div class="detail">0/10. The [Unreleased] section of CHANGELOG.md is empty; the new `truncate()` function has no entry, so the rubric&#39;s requirement for a one-line entry naming the function is not met.</div></li></ul>
+<div class="files"><code>src/index.js</code></div>
+<details class="patch"><summary>diff (+6 −0)</summary><pre>diff --git a/src/index.js b/src/index.js
+index 553f57d..4d79756 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -8,3 +8,9 @@ export function slugify(input) {
+ export function capitalize(input) {
+   return input.charAt(0).toUpperCase() + input.slice(1)
+ }
++
++export function truncate(text, max) {
++  if (text.length &lt;= max) return text
++  if (max &lt;= 0) return &#39;&#39;
++  return text.slice(0, max - 1) + &#39;…&#39;
++}
+</pre></details>
+</details>
+<details class="run partial">
+<summary><span class="badge">partial</span><b>#3</b><span class="score">50%</span><span class="meta">9.3s · $0.0026 · 1 files</span></summary>
+
+<ul class="checks"><li class="pass"><span class="mark">✓</span><span class="cname">truncate works</span></li><li class="pass"><span class="mark">✓</span><span class="cname">existing tests pass</span></li><li class="fail"><span class="mark">✗</span><span class="cname">changelog has an Added entry</span><div class="detail">exit 1
+</div></li><li class="fail"><span class="mark">✗</span><span class="cname">entry is written for users</span><span class="jscore">0/10</span><div class="detail">0/10. The [Unreleased] section of CHANGELOG.md is empty; the agent added no entry for the new `truncate` function, so the rubric&#39;s zero-score condition is met regardless of the code.</div></li></ul>
+<div class="files"><code>src/index.js</code></div>
+<details class="patch"><summary>diff (+6 −0)</summary><pre>diff --git a/src/index.js b/src/index.js
+index 553f57d..4d79756 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -8,3 +8,9 @@ export function slugify(input) {
+ export function capitalize(input) {
+   return input.charAt(0).toUpperCase() + input.slice(1)
+ }
++
++export function truncate(text, max) {
++  if (text.length &lt;= max) return text
++  if (max &lt;= 0) return &#39;&#39;
++  return text.slice(0, max - 1) + &#39;…&#39;
++}
+</pre></details>
+</details>
+<details class="run partial">
+<summary><span class="badge">partial</span><b>#4</b><span class="score">50%</span><span class="meta">8.2s · $0.0025 · 1 files</span></summary>
+
+<ul class="checks"><li class="pass"><span class="mark">✓</span><span class="cname">truncate works</span></li><li class="pass"><span class="mark">✓</span><span class="cname">existing tests pass</span></li><li class="fail"><span class="mark">✗</span><span class="cname">changelog has an Added entry</span><div class="detail">exit 1
+</div></li><li class="fail"><span class="mark">✗</span><span class="cname">entry is written for users</span><span class="jscore">0/10</span><div class="detail">0/10. The [Unreleased] section of CHANGELOG.md is empty; the new truncate() function has no entry, so the rubric&#39;s requirement for a one-line entry naming the function is not met.</div></li></ul>
+<div class="files"><code>src/index.js</code></div>
+<details class="patch"><summary>diff (+6 −0)</summary><pre>diff --git a/src/index.js b/src/index.js
+index 553f57d..4d79756 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -8,3 +8,9 @@ export function slugify(input) {
+ export function capitalize(input) {
+   return input.charAt(0).toUpperCase() + input.slice(1)
+ }
++
++export function truncate(text, max) {
++  if (text.length &lt;= max) return text
++  if (max &lt;= 0) return &#39;&#39;
++  return text.slice(0, max - 1) + &#39;…&#39;
++}
+</pre></details>
+</details>
+<details class="run partial">
+<summary><span class="badge">partial</span><b>#5</b><span class="score">50%</span><span class="meta">11s · $0.0030 · 1 files</span></summary>
+
+<ul class="checks"><li class="pass"><span class="mark">✓</span><span class="cname">truncate works</span></li><li class="pass"><span class="mark">✓</span><span class="cname">existing tests pass</span></li><li class="fail"><span class="mark">✗</span><span class="cname">changelog has an Added entry</span><div class="detail">exit 1
+</div></li><li class="fail"><span class="mark">✗</span><span class="cname">entry is written for users</span><span class="jscore">0/10</span><div class="detail">0/10. The [Unreleased] section of CHANGELOG.md is empty; no entry was added for the new `truncate()` function, even though the final message says the change was made to src/index.js.</div></li></ul>
+<div class="files"><code>src/index.js</code></div>
+<details class="patch"><summary>diff (+6 −0)</summary><pre>diff --git a/src/index.js b/src/index.js
+index 553f57d..4d79756 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -8,3 +8,9 @@ export function slugify(input) {
+ export function capitalize(input) {
+   return input.charAt(0).toUpperCase() + input.slice(1)
+ }
++
++export function truncate(text, max) {
++  if (text.length &lt;= max) return text
++  if (max &lt;= 0) return &#39;&#39;
++  return text.slice(0, max - 1) + &#39;…&#39;
++}
+</pre></details>
+</details></div><div><h4>changelog</h4><details class="run pass">
+<summary><span class="badge">pass</span><b>#1</b><span class="score">100%</span><span class="meta">12s · $0.0033 · 2 files</span></summary>
+
+<ul class="checks"><li class="pass"><span class="mark">✓</span><span class="cname">truncate works</span></li><li class="pass"><span class="mark">✓</span><span class="cname">existing tests pass</span></li><li class="pass"><span class="mark">✓</span><span class="cname">changelog has an Added entry</span></li><li class="pass"><span class="mark">✓</span><span class="cname">entry is written for users</span><span class="jscore">10/10</span><div class="detail">10/10. The [Unreleased] section has a new entry under the correct &#39;### Added&#39; heading with a clear one-line description naming the function `truncate(text, max)` and what it does for library users.</div></li></ul>
+<div class="files"><code>CHANGELOG.md</code> <code>src/index.js</code></div>
+<details class="patch"><summary>diff (+10 −0)</summary><pre>diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 8a0ff46..c264fcb 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -4,6 +4,10 @@ All notable changes to this project are documented here.
+ 
+ ## [Unreleased]
+ 
++### Added
++
++- `truncate(text, max)` cuts a string to at most `max` characters, ending with &quot;…&quot; when it is shortened.
++
+ ## [1.2.0] - 2026-10-02
+ 
+ ### Added
+diff --git a/src/index.js b/src/index.js
+index 553f57d..4d79756 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -8,3 +8,9 @@ export function slugify(input) {
+ export function capitalize(input) {
+   return input.charAt(0).toUpperCase() + input.slice(1)
+ }
++
++export function truncate(text, max) {
++  if (text.length &lt;= max) return text
++  if (max &lt;= 0) return &#39;&#39;
++  return text.slice(0, max - 1) + &#39;…&#39;
++}
+</pre></details>
+</details>
+<details class="run pass">
+<summary><span class="badge">pass</span><b>#2</b><span class="score">100%</span><span class="meta">12s · $0.0034 · 3 files</span></summary>
+
+<ul class="checks"><li class="pass"><span class="mark">✓</span><span class="cname">truncate works</span></li><li class="pass"><span class="mark">✓</span><span class="cname">existing tests pass</span></li><li class="pass"><span class="mark">✓</span><span class="cname">changelog has an Added entry</span></li><li class="pass"><span class="mark">✓</span><span class="cname">entry is written for users</span><span class="jscore">10/10</span><div class="detail">10/10. The [Unreleased] section has a single clear one-line entry under the &quot;### Added&quot; heading that names the function `truncate(text, max)` and tells a library user what it does (cuts text longer than max and ends with &quot;…&quot; so the result is exactly max characters).</div></li></ul>
+<div class="files"><code>CHANGELOG.md</code> <code>src/index.js</code> <code>test/index.test.js</code></div>
+<details class="patch"><summary>diff (+20 −1)</summary><pre>diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 8a0ff46..aadefef 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -4,6 +4,10 @@ All notable changes to this project are documented here.
+ 
+ ## [Unreleased]
+ 
++### Added
++
++- `truncate(text, max)` cuts text longer than `max` characters and ends it with &quot;…&quot;, so the result is exactly `max` characters long.
++
+ ## [1.2.0] - 2026-10-02
+ 
+ ### Added
+diff --git a/src/index.js b/src/index.js
+index 553f57d..4d79756 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -8,3 +8,9 @@ export function slugify(input) {
+ export function capitalize(input) {
+   return input.charAt(0).toUpperCase() + input.slice(1)
+ }
++
++export function truncate(text, max) {
++  if (text.length &lt;= max) return text
++  if (max &lt;= 0) return &#39;&#39;
++  return text.slice(0, max - 1) + &#39;…&#39;
++}
+diff --git a/test/index.test.js b/test/index.test.js
+index ade441d..c4ca4f3 100644
+--- a/test/index.test.js
++++ b/test/index.test.js
+@@ -1,6 +1,6 @@
+ import assert from &#39;node:assert/strict&#39;
+ import { test } from &#39;node:test&#39;
+-import { capitalize, slugify } from &#39;../src/index.js&#39;
++import { capitalize, slugify, truncate } from &#39;../src/index.js&#39;
+ 
+ test(&#39;slugify&#39;, () =&gt; {
+   assert.equal(slugify(&#39;Hello, World!&#39;), &#39;hello-world&#39;)
+@@ -9,3 +9,12 @@ test(&#39;slugify&#39;, () =&gt; {
+ test(&#39;capitalize&#39;, () =&gt; {
+   assert.equal(capitalize(&#39;tiny&#39;), &#39;Tiny&#39;)
+ })
++
++test(&#39;truncate&#39;, () =&gt; {
++  assert.equal(truncate(&#39;hello world&#39;, 20), &#39;hello world&#39;)
++  assert.equal(truncate(&#39;hello world&#39;, 11), &#39;hello world&#39;)
++  assert.equal(truncate(&#39;hello world&#39;, 8), &#39;hello w…&#39;)
++  assert.equal(truncate(&#39;hello world&#39;, 8).length, 8)
++  assert.equal(truncate(&#39;hello world&#39;, 1), &#39;…&#39;)
++  assert.equal(truncate(&#39;hello world&#39;, 0), &#39;&#39;)
++})
+</pre></details>
+</details>
+<details class="run partial">
+<summary><span class="badge">partial</span><b>#3</b><span class="score">50%</span><span class="meta">7.8s · $0.0024 · 1 files</span></summary>
+
+<ul class="checks"><li class="pass"><span class="mark">✓</span><span class="cname">truncate works</span></li><li class="pass"><span class="mark">✓</span><span class="cname">existing tests pass</span></li><li class="fail"><span class="mark">✗</span><span class="cname">changelog has an Added entry</span><div class="detail">exit 1
+</div></li><li class="fail"><span class="mark">✗</span><span class="cname">entry is written for users</span><span class="jscore">0/10</span><div class="detail">0/10. The [Unreleased] section of CHANGELOG.md is empty; the new `truncate` function has no changelog entry under any heading, so the rubric&#39;s requirement for a one-line entry naming the function is not met.</div></li></ul>
+<div class="files"><code>src/index.js</code></div>
+<details class="patch"><summary>diff (+6 −0)</summary><pre>diff --git a/src/index.js b/src/index.js
+index 553f57d..4d79756 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -8,3 +8,9 @@ export function slugify(input) {
+ export function capitalize(input) {
+   return input.charAt(0).toUpperCase() + input.slice(1)
+ }
++
++export function truncate(text, max) {
++  if (text.length &lt;= max) return text
++  if (max &lt;= 0) return &#39;&#39;
++  return text.slice(0, max - 1) + &#39;…&#39;
++}
+</pre></details>
+</details>
+<details class="run partial">
+<summary><span class="badge">partial</span><b>#4</b><span class="score">50%</span><span class="meta">8.9s · $0.0025 · 1 files</span></summary>
+
+<ul class="checks"><li class="pass"><span class="mark">✓</span><span class="cname">truncate works</span></li><li class="pass"><span class="mark">✓</span><span class="cname">existing tests pass</span></li><li class="fail"><span class="mark">✗</span><span class="cname">changelog has an Added entry</span><div class="detail">exit 1
+</div></li><li class="fail"><span class="mark">✗</span><span class="cname">entry is written for users</span><span class="jscore">0/10</span><div class="detail">0/10. The [Unreleased] section of CHANGELOG.md is empty; the truncate() entry was never added, so there is no new entry under any heading.</div></li></ul>
+<div class="files"><code>src/index.js</code></div>
+<details class="patch"><summary>diff (+6 −0)</summary><pre>diff --git a/src/index.js b/src/index.js
+index 553f57d..4d79756 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -8,3 +8,9 @@ export function slugify(input) {
+ export function capitalize(input) {
+   return input.charAt(0).toUpperCase() + input.slice(1)
+ }
++
++export function truncate(text, max) {
++  if (text.length &lt;= max) return text
++  if (max &lt;= 0) return &#39;&#39;
++  return text.slice(0, max - 1) + &#39;…&#39;
++}
+</pre></details>
+</details>
+<details class="run pass">
+<summary><span class="badge">pass</span><b>#5</b><span class="score">100%</span><span class="meta">15s · $0.0040 · 3 files</span></summary>
+
+<ul class="checks"><li class="pass"><span class="mark">✓</span><span class="cname">truncate works</span></li><li class="pass"><span class="mark">✓</span><span class="cname">existing tests pass</span></li><li class="pass"><span class="mark">✓</span><span class="cname">changelog has an Added entry</span></li><li class="pass"><span class="mark">✓</span><span class="cname">entry is written for users</span><span class="jscore">10/10</span><div class="detail">10/10. The [Unreleased] section has an &quot;### Added&quot; heading with a single clear entry that names `truncate(text, max)` and states what it does for library users. It is a one-line entry and fully meets the rubric.</div></li></ul>
+<div class="files"><code>CHANGELOG.md</code> <code>src/index.js</code> <code>test/index.test.js</code></div>
+<details class="patch"><summary>diff (+20 −1)</summary><pre>diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 8a0ff46..c264fcb 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -4,6 +4,10 @@ All notable changes to this project are documented here.
+ 
+ ## [Unreleased]
+ 
++### Added
++
++- `truncate(text, max)` cuts a string to at most `max` characters, ending with &quot;…&quot; when it is shortened.
++
+ ## [1.2.0] - 2026-10-02
+ 
+ ### Added
+diff --git a/src/index.js b/src/index.js
+index 553f57d..4d79756 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -8,3 +8,9 @@ export function slugify(input) {
+ export function capitalize(input) {
+   return input.charAt(0).toUpperCase() + input.slice(1)
+ }
++
++export function truncate(text, max) {
++  if (text.length &lt;= max) return text
++  if (max &lt;= 0) return &#39;&#39;
++  return text.slice(0, max - 1) + &#39;…&#39;
++}
+diff --git a/test/index.test.js b/test/index.test.js
+index ade441d..002e8ff 100644
+--- a/test/index.test.js
++++ b/test/index.test.js
+@@ -1,6 +1,6 @@
+ import assert from &#39;node:assert/strict&#39;
+ import { test } from &#39;node:test&#39;
+-import { capitalize, slugify } from &#39;../src/index.js&#39;
++import { capitalize, slugify, truncate } from &#39;../src/index.js&#39;
+ 
+ test(&#39;slugify&#39;, () =&gt; {
+   assert.equal(slugify(&#39;Hello, World!&#39;), &#39;hello-world&#39;)
+@@ -9,3 +9,12 @@ test(&#39;slugify&#39;, () =&gt; {
+ test(&#39;capitalize&#39;, () =&gt; {
+   assert.equal(capitalize(&#39;tiny&#39;), &#39;Tiny&#39;)
+ })
++
++test(&#39;truncate&#39;, () =&gt; {
++  assert.equal(truncate(&#39;hello&#39;, 10), &#39;hello&#39;)
++  assert.equal(truncate(&#39;hello&#39;, 5), &#39;hello&#39;)
++  assert.equal(truncate(&#39;hello world&#39;, 5), &#39;hell…&#39;)
++  assert.equal(truncate(&#39;hello world&#39;, 5).length, 5)
++  assert.equal(truncate(&#39;hello world&#39;, 1), &#39;…&#39;)
++  assert.equal(truncate(&#39;hello world&#39;, 0), &#39;&#39;)
++})
+</pre></details>
+</details></div></div>
+</section>
+
+<footer>
+Score is the weighted share of checks passed per run (judge checks count as score/10). Lift is skill minus no skill, averaged over tasks, with a 95% bootstrap interval. Pass rate intervals use Newcombe's method.<br>
+skill 2ace5d66480b324d · tasks dd4827b1be2d608b · skilltrial 0.1.0 · <a href="https://github.com/whosdrix/skilltrial">github.com/whosdrix/skilltrial</a>
+</footer>
+</main>
+</body>
+</html>

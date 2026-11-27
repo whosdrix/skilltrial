@@ -1,0 +1,33 @@
+name: Bug report
+description: Something does not work as expected
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: The command you ran, what you expected, and what you got instead.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: skilltrial version
+      description: From `skilltrial --version`
+      placeholder: 0.1.0
+  - type: input
+    id: agent
+    attributes:
+      label: Agent and version
+      placeholder: Claude Code 2.1.x
+  - type: textarea
+    id: tasks
+    attributes:
+      label: Task file
+      description: The smallest skilltrial.yaml that shows the problem.
+      render: yaml
+  - type: textarea
+    id: logs
+    attributes:
+      label: Output
+      render: text

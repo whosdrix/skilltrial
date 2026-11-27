@@ -1,0 +1,6 @@
+node_modules
+dist
+coverage
+.skilltrial
+*.log
+.DS_Store

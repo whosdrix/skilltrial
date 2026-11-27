@@ -1,0 +1,39 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 8a0ff46..c9c903c 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -4,6 +4,10 @@ All notable changes to this project are documented here.
+ 
+ ## [Unreleased]
+ 
++### Fixed
++
++- `slugify()` now strips accents, so `"Crème brûlée"` becomes `"creme-brulee"`.
++
+ ## [1.2.0] - 2026-10-02
+ 
+ ### Added
+diff --git a/src/index.js b/src/index.js
+index 553f57d..7e293d4 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -1,5 +1,7 @@
+ export function slugify(input) {
+   return input
++    .normalize('NFD')
++    .replace(/[̀-ͯ]/g, '')
+     .toLowerCase()
+     .replace(/[^a-z0-9]+/g, '-')
+     .replace(/^-+|-+$/g, '')
+diff --git a/test/index.test.js b/test/index.test.js
+index ade441d..f80a1d0 100644
+--- a/test/index.test.js
++++ b/test/index.test.js
+@@ -4,6 +4,7 @@ import { capitalize, slugify } from '../src/index.js'
+ 
+ test('slugify', () => {
+   assert.equal(slugify('Hello, World!'), 'hello-world')
++  assert.equal(slugify('Crème brûlée'), 'creme-brulee')
+ })
+ 
+ test('capitalize', () => {

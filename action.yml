@@ -1,0 +1,72 @@
+name: skilltrial
+description: Check that an agent skill still helps. Runs your tasks with and without it and fails on a regression.
+branding:
+  icon: check-circle
+  color: blue
+
+inputs:
+  skill:
+    description: Path to the skill folder (the one with SKILL.md)
+    required: true
+  tasks:
+    description: Path to the task file
+    default: skilltrial.yaml
+  against:
+    description: Compare with this skill folder instead of no skill, for example a checkout of main
+    default: ""
+  runs:
+    description: Runs per arm for each task
+    default: ""
+  model:
+    description: Model for the agent
+    default: ""
+  fail-on-regression:
+    description: Fail the job when the skill makes scores worse
+    default: "true"
+  min-lift:
+    description: Fail the job when the score lift is below this many points
+    default: ""
+  out:
+    description: Output folder
+    default: skilltrial-report
+  version:
+    description: skilltrial version from npm
+    default: latest
+
+outputs:
+  report:
+    description: Path to report.html
+    value: ${{ inputs.out }}/report.html
+  results:
+    description: Path to results.json
+    value: ${{ inputs.out }}/results.json
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v7
+      with:
+        node-version: 22
+    - name: Install Claude Code
+      shell: bash
+      run: command -v claude >/dev/null || npm install -g @anthropic-ai/claude-code
+    - name: Run skilltrial
+      shell: bash
+      env:
+        ST_SKILL: ${{ inputs.skill }}
+        ST_TASKS: ${{ inputs.tasks }}
+        ST_AGAINST: ${{ inputs.against }}
+        ST_RUNS: ${{ inputs.runs }}
+        ST_MODEL: ${{ inputs.model }}
+        ST_FAIL: ${{ inputs.fail-on-regression }}
+        ST_MIN_LIFT: ${{ inputs.min-lift }}
+        ST_OUT: ${{ inputs.out }}
+        ST_VERSION: ${{ inputs.version }}
+      run: |
+        args=(run "$ST_SKILL" --tasks "$ST_TASKS" --out "$ST_OUT")
+        [ -n "$ST_AGAINST" ] && args+=(--against "$ST_AGAINST")
+        [ -n "$ST_RUNS" ] && args+=(--runs "$ST_RUNS")
+        [ -n "$ST_MODEL" ] && args+=(--model "$ST_MODEL")
+        [ "$ST_FAIL" = "true" ] && args+=(--fail-on-regression)
+        [ -n "$ST_MIN_LIFT" ] && args+=(--min-lift "$ST_MIN_LIFT")
+        npx --yes "skilltrial@$ST_VERSION" "${args[@]}"

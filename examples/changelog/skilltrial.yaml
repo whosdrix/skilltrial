@@ -1,0 +1,56 @@
+# A skill that teaches a house rule the model can't guess: every change
+# gets a changelog entry. Run from the repo root:
+#   skilltrial run examples/changelog/skill -t examples/changelog/skilltrial.yaml
+version: 1
+
+agent:
+  type: claude-code
+  model: haiku
+
+judge:
+  type: claude-code
+  model: haiku
+
+runs: 5
+concurrency: 4
+timeout: 5m
+
+tasks:
+  - id: fix-accents
+    fixture: ./fixture
+    prompt: |
+      slugify("Crème brûlée") returns "cr-me-br-l-e". It should return
+      "creme-brulee". Fix it.
+    checks:
+      - name: accents are stripped
+        run: |
+          node -e "import('./src/index.js').then(m => process.exit(m.slugify('Crème brûlée') === 'creme-brulee' ? 0 : 1))"
+      - name: existing tests pass
+        run: node --test
+      - name: changelog has a Fixed entry
+        run: |
+          awk '/^## \[Unreleased\]/{u=1;next} /^## \[/{u=0} u' CHANGELOG.md | grep -A3 '### Fixed' | grep -qi 'slugify'
+
+  - id: add-truncate
+    fixture: ./fixture
+    prompt: |
+      Add a truncate(text, max) function to src/index.js. If text is longer
+      than max characters, cut it and end it with "…" so the result is
+      exactly max characters long. Export it.
+    checks:
+      - name: truncate works
+        run: |
+          node -e "import('./src/index.js').then(m => process.exit(m.truncate('hello world', 5) === 'hell…' && m.truncate('hi', 5) === 'hi' ? 0 : 1))"
+      - name: existing tests pass
+        run: node --test
+      - name: changelog has an Added entry
+        run: |
+          awk '/^## \[Unreleased\]/{u=1;next} /^## \[/{u=0} u' CHANGELOG.md | grep -A3 '### Added' | grep -qi 'truncate'
+      - name: entry is written for users
+        judge: |
+          Look at the [Unreleased] section of CHANGELOG.md. Score 10 if it has a
+          clear one-line entry under the right heading that tells a library user
+          what changed, naming the function. Score 0 if there is no new entry.
+          Ignore the code.
+        files: [CHANGELOG.md]
+        pass: 7

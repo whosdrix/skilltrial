@@ -1,0 +1,54 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 8a0ff46..aadefef 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -4,6 +4,10 @@ All notable changes to this project are documented here.
+ 
+ ## [Unreleased]
+ 
++### Added
++
++- `truncate(text, max)` cuts text longer than `max` characters and ends it with "…", so the result is exactly `max` characters long.
++
+ ## [1.2.0] - 2026-10-02
+ 
+ ### Added
+diff --git a/src/index.js b/src/index.js
+index 553f57d..4d79756 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -8,3 +8,9 @@ export function slugify(input) {
+ export function capitalize(input) {
+   return input.charAt(0).toUpperCase() + input.slice(1)
+ }
++
++export function truncate(text, max) {
++  if (text.length <= max) return text
++  if (max <= 0) return ''
++  return text.slice(0, max - 1) + '…'
++}
+diff --git a/test/index.test.js b/test/index.test.js
+index ade441d..c4ca4f3 100644
+--- a/test/index.test.js
++++ b/test/index.test.js
+@@ -1,6 +1,6 @@
+ import assert from 'node:assert/strict'
+ import { test } from 'node:test'
+-import { capitalize, slugify } from '../src/index.js'
++import { capitalize, slugify, truncate } from '../src/index.js'
+ 
+ test('slugify', () => {
+   assert.equal(slugify('Hello, World!'), 'hello-world')
+@@ -9,3 +9,12 @@ test('slugify', () => {
+ test('capitalize', () => {
+   assert.equal(capitalize('tiny'), 'Tiny')
+ })
++
++test('truncate', () => {
++  assert.equal(truncate('hello world', 20), 'hello world')
++  assert.equal(truncate('hello world', 11), 'hello world')
++  assert.equal(truncate('hello world', 8), 'hello w…')
++  assert.equal(truncate('hello world', 8).length, 8)
++  assert.equal(truncate('hello world', 1), '…')
++  assert.equal(truncate('hello world', 0), '')
++})

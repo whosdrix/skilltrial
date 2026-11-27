@@ -1,0 +1,29 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+index 8a0ff46..c264fcb 100644
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -4,6 +4,10 @@ All notable changes to this project are documented here.
+ 
+ ## [Unreleased]
+ 
++### Added
++
++- `truncate(text, max)` cuts a string to at most `max` characters, ending with "…" when it is shortened.
++
+ ## [1.2.0] - 2026-10-02
+ 
+ ### Added
+diff --git a/src/index.js b/src/index.js
+index 553f57d..4d79756 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -8,3 +8,9 @@ export function slugify(input) {
+ export function capitalize(input) {
+   return input.charAt(0).toUpperCase() + input.slice(1)
+ }
++
++export function truncate(text, max) {
++  if (text.length <= max) return text
++  if (max <= 0) return ''
++  return text.slice(0, max - 1) + '…'
++}
