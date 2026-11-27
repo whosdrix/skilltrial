@@ -54,11 +54,7 @@
     "linesAdded": 20,
     "linesRemoved": 1
   },
-  "files": [
-    "CHANGELOG.md",
-    "src/index.js",
-    "test/index.test.js"
-  ],
+  "files": ["CHANGELOG.md", "src/index.js", "test/index.test.js"],
   "logDir": "runs/add-truncate/skill-5",
   "finalMessage": "I added `truncate(text, max)` to `src/index.js` and exported it. The test suite passes (3/3, including a new `truncate` test).\n\n```js\nexport function truncate(text, max) {\n  if (text.length <= max) return text\n  if (max <= 0) return ''\n  return text.slice(0, max - 1) + '…'\n}\n```\n\n- **Short enough:** text of length `max` or less comes back unchanged.\n- **Too long:** the result is `max - 1` characters plus \"…\", so it is exactly `max` characters.\n- **Edge cases I chose:** `max` of 0 or less returns `''`, since \"…\" alone would be longer than the limit. `max` of 1 returns just \"…\".\n\nThings I did beyond the literal request:\n- **Test:** added a `truncate` case to `test/index.test.js`.\n- **Changelog:** added an entry under `[Unreleased]` in `CHANGELOG.md`, following the repo's convention.\n\nLength is counted in JavaScript string units (UTF-16 code units), like the rest of the code. Characters outside the Basic Multilingual Plane, such as most emoji, count as two. If you want true code-point counting, I can switch it to `Array.from`.\n\nI did not commit anything. The memory note says you don't want AI co-author lines in commits, so I left those out, as your rule requires."
 }

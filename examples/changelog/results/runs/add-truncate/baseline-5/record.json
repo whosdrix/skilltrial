@@ -54,9 +54,7 @@
     "linesAdded": 6,
     "linesRemoved": 0
   },
-  "files": [
-    "src/index.js"
-  ],
+  "files": ["src/index.js"],
   "logDir": "runs/add-truncate/baseline-5",
   "finalMessage": "I added `truncate(text, max)` to `src/index.js` and exported it. The existing two tests still pass.\n\n```js\nexport function truncate(text, max) {\n  if (text.length <= max) return text\n  if (max <= 0) return ''\n  return text.slice(0, max - 1) + '…'\n}\n```\n\n- Text at or under `max` characters is returned unchanged.\n- Longer text is cut to `max - 1` characters and ends with `…`, so the result is exactly `max` characters.\n- I chose `''` for `max <= 0`, since no ellipsis can fit in zero characters. Say if you'd rather it throw.\n\nI checked a few inputs by hand: `('hello world', 8)` gives `hello w…`, `('hello', 1)` gives `…`, and `('hello', 10)` returns `hello`. I did not add a test for `truncate` to `test/index.test.js`. I left the change uncommitted."
 }

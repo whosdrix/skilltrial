@@ -44,11 +44,7 @@
     "linesAdded": 7,
     "linesRemoved": 0
   },
-  "files": [
-    "CHANGELOG.md",
-    "src/index.js",
-    "test/index.test.js"
-  ],
+  "files": ["CHANGELOG.md", "src/index.js", "test/index.test.js"],
   "logDir": "runs/fix-accents/skill-5",
   "finalMessage": "`slugify(\"Crème brûlée\")` now returns `\"creme-brulee\"`. The test suite passes (2/2), including a new assertion for that case.\n\n**The cause:** the regex `[^a-z0-9]+` treated every non-ASCII letter as a separator, so `è` and `û` became dashes.\n\n**The fix** (`src/index.js`): before lowercasing, the input is decomposed to NFD and the combining accent marks (`\\u0300–\\u036f`) are removed. That turns `è` into `e` and `û` into `u`, so the existing regex only sees plain letters.\n\nI also made two small additions:\n- **Test** (`test/index.test.js`): added `slugify('Crème brûlée') === 'creme-brulee'`.\n- **Changelog** (`CHANGELOG.md`): added a \"Fixed\" entry under `[Unreleased]`. Remove it if you'd rather write that yourself.\n\nNothing is committed. Characters with no decomposition (for example `ß` or `ø`) still become dashes; say if you want those transliterated too."
 }

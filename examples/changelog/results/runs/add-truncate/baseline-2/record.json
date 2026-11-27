@@ -54,9 +54,7 @@
     "linesAdded": 6,
     "linesRemoved": 0
   },
-  "files": [
-    "src/index.js"
-  ],
+  "files": ["src/index.js"],
   "logDir": "runs/add-truncate/baseline-2",
   "finalMessage": "I added and exported `truncate(text, max)` in `src/index.js`. The existing test suite passes (2/2).\n\n```js\nexport function truncate(text, max) {\n  if (text.length <= max) return text\n  if (max <= 0) return ''\n  return text.slice(0, max - 1) + '…'\n}\n```\n\n- If `text` already fits, it is returned unchanged.\n- Otherwise the result is `max` characters long, ending in `…`.\n- For `max` of 0 or less, it returns `''`, since there's no room for even the ellipsis.\n\nI checked a few cases by hand: `truncate('hello world', 5)` gives `'hell…'`, `truncate('hi', 5)` gives `'hi'`, and `truncate('hello', 1)` gives `'…'`.\n\nLength is counted in JavaScript string units (UTF-16 code units). `…` is one unit, so the output length is exact for ordinary text. Text with emoji or other astral characters can split a surrogate pair at the cut point. Tell me if you need grapheme-aware truncation.\n\nI did not add tests or commit anything."
 }

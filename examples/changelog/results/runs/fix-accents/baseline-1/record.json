@@ -44,10 +44,7 @@
     "linesAdded": 3,
     "linesRemoved": 0
   },
-  "files": [
-    "src/index.js",
-    "test/index.test.js"
-  ],
+  "files": ["src/index.js", "test/index.test.js"],
   "logDir": "runs/fix-accents/baseline-1",
   "finalMessage": "`slugify(\"Crème brûlée\")` now returns `\"creme-brulee\"`, and both tests pass.\n\nThe cause was that the regex `[^a-z0-9]` treated every accented letter as a separator. The fix is in `src/index.js`: the input is now normalized with NFKD and the combining accent marks are stripped before lowercasing and replacing non-alphanumerics. So `è` becomes `e` and `û` becomes `u`, while plain ASCII input behaves as before.\n\nI also added the `Crème brûlée` case to the `slugify` test in `test/index.test.js`. I did not commit anything."
 }

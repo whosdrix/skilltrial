@@ -54,9 +54,7 @@
     "linesAdded": 6,
     "linesRemoved": 0
   },
-  "files": [
-    "src/index.js"
-  ],
+  "files": ["src/index.js"],
   "logDir": "runs/add-truncate/skill-4",
   "finalMessage": "I added `truncate(text, max)` to `src/index.js` and exported it. I didn't commit, since you didn't ask for one.\n\n```js\nexport function truncate(text, max) {\n  if (text.length <= max) return text\n  if (max <= 0) return ''\n  return text.slice(0, max - 1) + '…'\n}\n```\n\nI ran it on a few inputs and the output length matched `max` in each case where truncation happened:\n\n- `truncate('hello world', 8)` → `\"hello w…\"` (8 characters)\n- `truncate('hello', 10)` and `truncate('hello', 5)` → `\"hello\"` (returned unchanged)\n- `truncate('hello', 1)` → `\"…\"`\n- `truncate('hello', 0)` → `\"\"`\n\nChoices I made:\n- If `text` already fits, it's returned as is.\n- For `max` of 0 or less, it returns an empty string, since there's no room for the ellipsis.\n- It doesn't trim whitespace before the ellipsis, so the result is always exactly `max` characters.\n- Length is counted in JavaScript string units, so characters outside the Basic Multilingual Plane (some emoji, for example) count as two."
 }

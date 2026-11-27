@@ -54,9 +54,7 @@
     "linesAdded": 6,
     "linesRemoved": 0
   },
-  "files": [
-    "src/index.js"
-  ],
+  "files": ["src/index.js"],
   "logDir": "runs/add-truncate/baseline-3",
   "finalMessage": "I added `export function truncate(text, max)` to `src/index.js`, after `capitalize`. I ran it on a few inputs and each result has the expected length.\n\n```js\nexport function truncate(text, max) {\n  if (text.length <= max) return text\n  if (max <= 0) return ''\n  return text.slice(0, max - 1) + '…'\n}\n```\n\n- Text at or under `max` is returned unchanged.\n- Longer text is cut to `max - 1` characters plus `…`, so the result is exactly `max` characters.\n- For `max` of 0 or less, the result is an empty string. Without that guard, `slice(0, -1)` would return the wrong length. This is my choice for the edge case, since the request didn't cover it.\n- Length is counted in UTF-16 code units, as JavaScript's `.length` does. Characters outside the Basic Multilingual Plane, such as most emoji, count as 2.\n\nI didn't commit anything. I also didn't run the project's test suite, since I didn't check for one."
 }

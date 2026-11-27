@@ -54,10 +54,7 @@
     "linesAdded": 10,
     "linesRemoved": 0
   },
-  "files": [
-    "CHANGELOG.md",
-    "src/index.js"
-  ],
+  "files": ["CHANGELOG.md", "src/index.js"],
   "logDir": "runs/add-truncate/skill-1",
   "finalMessage": "I added `truncate(text, max)` to `src/index.js` and exported it. The existing tests pass (2/2).\n\n```js\nexport function truncate(text, max) {\n  if (text.length <= max) return text\n  if (max <= 0) return ''\n  return text.slice(0, max - 1) + '…'\n}\n```\n\nBehaviour I checked by running it:\n- `truncate('hello world', 8)` returns `'hello w…'`, exactly 8 characters.\n- Text that already fits is returned unchanged, e.g. `truncate('hi', 8)`.\n- `truncate('abcdef', 1)` returns `'…'`.\n- A `max` of 0 or less returns `''`. The request didn't cover this, so it's my choice; tell me if you'd rather it throw.\n\nI also added an entry under `[Unreleased]` in `CHANGELOG.md`, since the repo keeps one and this is a behaviour change. I didn't add tests for `truncate`, and I didn't commit anything, since you didn't ask for a commit. If you want one, I'll commit without the Co-Authored-By trailer, because your memory notes say no AI attribution on GitHub."
 }

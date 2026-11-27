@@ -44,10 +44,7 @@
     "linesAdded": 3,
     "linesRemoved": 0
   },
-  "files": [
-    "src/index.js",
-    "test/index.test.js"
-  ],
+  "files": ["src/index.js", "test/index.test.js"],
   "logDir": "runs/fix-accents/baseline-2",
   "finalMessage": "`slugify(\"Crème brûlée\")` now returns `\"creme-brulee\"`. The test suite passes (2/2), including a new regression test for that input.\n\nThe problem was that the regex `[^a-z0-9]` treated every accented letter as a separator, so `è` and `û` became dashes. The fix in `src/index.js` decomposes accented characters with `normalize('NFKD')` and strips the combining marks (`\\p{M}`) before lowercasing and replacing. So `è` becomes `e` instead of a dash.\n\nI changed two files:\n- `src/index.js`: added the normalize and strip steps.\n- `test/index.test.js`: added `assert.equal(slugify('Crème brûlée'), 'creme-brulee')` to the existing `slugify` test.\n\nI didn't commit anything. The `CHANGELOG.md` has a `slugify()` entry you may want to extend for this fix."
 }

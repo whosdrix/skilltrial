@@ -44,11 +44,7 @@
     "linesAdded": 7,
     "linesRemoved": 0
   },
-  "files": [
-    "CHANGELOG.md",
-    "src/index.js",
-    "test/index.test.js"
-  ],
+  "files": ["CHANGELOG.md", "src/index.js", "test/index.test.js"],
   "logDir": "runs/fix-accents/skill-3",
   "finalMessage": "The fix is in. `slugify(\"Crème brûlée\")` now returns `\"creme-brulee\"`.\n\n**The cause:** the function replaced every character outside `a-z0-9` with a dash. Accented letters like `è` and `û` fall outside that range, so each one became a dash.\n\n**The change** (`src/index.js`): the function now runs `.normalize('NFD')` and strips the combining accent marks (`/\\p{M}/gu`) before lowercasing and replacing. Letters like `è` split into `e` plus a combining mark, and the mark is removed.\n\nI also made two other changes:\n- **Test** (`test/index.test.js`): added an assertion that `slugify('Crème brûlée')` equals `'creme-brulee'`.\n- **Changelog** (`CHANGELOG.md`): added a `### Fixed` entry under `[Unreleased]`, following the project's changelog skill.\n\n**Verification:** `node --test test/index.test.js` passes both tests. My first run used `test/` as the argument and failed, but that was my command, not the code. Running the test file directly is the correct check.\n\n**Known gap:** letters that don't decompose into a base letter plus accent are still dashed. For example, `slugify(\"Straße\")` returns `\"stra-e\"`, because `ß` has no decomposition. Fixing that needs an explicit map (`ß` → `ss`, and similar). I left it alone since you didn't ask for it. Tell me if you want it added.\n\nI haven't committed anything."
 }

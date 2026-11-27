@@ -44,10 +44,7 @@
     "linesAdded": 3,
     "linesRemoved": 0
   },
-  "files": [
-    "src/index.js",
-    "test/index.test.js"
-  ],
+  "files": ["src/index.js", "test/index.test.js"],
   "logDir": "runs/fix-accents/baseline-3",
   "finalMessage": "`slugify(\"Crème brûlée\")` now returns `\"creme-brulee\"`. The test suite passes (2/2).\n\nThe cause: the function lowercased the input and then replaced every non-ASCII-letter character with a dash, so `è` and `û` became separators. The fix in `src/index.js` decomposes accented characters with Unicode NFKD normalization and strips the combining accent marks before the other steps run. Plain ASCII input behaves as before.\n\nI also added an assertion for `'Crème brûlée'` to `test/index.test.js`. I did not commit anything."
 }

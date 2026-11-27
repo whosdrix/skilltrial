@@ -54,9 +54,7 @@
     "linesAdded": 6,
     "linesRemoved": 0
   },
-  "files": [
-    "src/index.js"
-  ],
+  "files": ["src/index.js"],
   "logDir": "runs/add-truncate/baseline-4",
   "finalMessage": "I added `truncate(text, max)` to `src/index.js` and exported it. I haven't committed it.\n\n```js\nexport function truncate(text, max) {\n  if (text.length <= max) return text\n  if (max <= 0) return ''\n  return text.slice(0, max - 1) + '…'\n}\n```\n\nI ran a quick check on the edge cases:\n\n- `truncate('hello world', 8)` returns `'hello w…'` (8 characters).\n- Text that already fits, such as `truncate('hello', 10)`, comes back unchanged.\n- `truncate('hello', 1)` returns `'…'`.\n- `truncate('hello', 0)` and `truncate('', 3)` return `''`.\n\nThe task didn't say what to do when `max` is 0 or negative, so I return an empty string for those. Without the early return, `slice(0, -1)` would drop characters from the end instead of returning the length you asked for."
 }

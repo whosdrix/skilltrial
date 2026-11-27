@@ -44,10 +44,7 @@
     "linesAdded": 3,
     "linesRemoved": 0
   },
-  "files": [
-    "src/index.js",
-    "test/index.test.js"
-  ],
+  "files": ["src/index.js", "test/index.test.js"],
   "logDir": "runs/fix-accents/baseline-5",
   "finalMessage": "`slugify(\"Crème brûlée\")` now returns `\"creme-brulee\"`, and the test suite passes (2/2).\n\nThe fix is in `src/index.js`. Before lowercasing, `slugify` now decomposes the input to NFKD and removes the combining marks, so \"è\" becomes \"e\" instead of being replaced by a dash. I also added the \"Crème brûlée\" case to the `slugify` test in `test/index.test.js`.\n\nCharacters that don't decompose, such as \"ø\" and \"ß\", still become dashes. I didn't add a transliteration table for those. I also didn't add a CHANGELOG entry, since you didn't ask for one."
 }

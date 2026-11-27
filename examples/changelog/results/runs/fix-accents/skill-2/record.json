@@ -44,11 +44,7 @@
     "linesAdded": 8,
     "linesRemoved": 0
   },
-  "files": [
-    "CHANGELOG.md",
-    "src/index.js",
-    "test/index.test.js"
-  ],
+  "files": ["CHANGELOG.md", "src/index.js", "test/index.test.js"],
   "logDir": "runs/fix-accents/skill-2",
   "finalMessage": "`slugify(\"Crème brûlée\")` now returns `\"creme-brulee\"`. The test suite passes (2/2), including the new assertions.\n\nThe cause was that the function lowercased the input and then replaced every non-ASCII letter with a dash. The fix in `src/index.js` decomposes accented characters first (`normalize('NFKD')`) and strips the combining marks, so `è` becomes `e` and `û` becomes `u`. Uppercase accents work too: `Ångström Éclair` becomes `angstrom-eclair`.\n\nI also made two related changes:\n- **`test/index.test.js`**: added assertions for `Crème brûlée` and `Ångström Éclair`.\n- **`CHANGELOG.md`**: added a \"Fixed\" entry under `[Unreleased]`, since this changes behavior.\n\nNothing is committed. Let me know if you want me to commit these."
 }

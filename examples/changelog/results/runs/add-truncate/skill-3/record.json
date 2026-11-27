@@ -54,9 +54,7 @@
     "linesAdded": 6,
     "linesRemoved": 0
   },
-  "files": [
-    "src/index.js"
-  ],
+  "files": ["src/index.js"],
   "logDir": "runs/add-truncate/skill-3",
   "finalMessage": "I added and exported `truncate(text, max)` in `src/index.js`, after `capitalize`. I haven't committed it.\n\n```js\nexport function truncate(text, max) {\n  if (text.length <= max) return text\n  if (max <= 0) return ''\n  return text.slice(0, max - 1) + '…'\n}\n```\n\nI ran it on a few inputs. `truncate('hello world', 8)` returns `'hello w…'` (8 characters). Text that already fits comes back unchanged, and `max` of 1 returns just `'…'`.\n\nTwo choices I made that you didn't specify:\n- **Length is counted in UTF-16 code units**, which is what `.length` measures in JavaScript. For text with emoji or other characters outside the Basic Multilingual Plane, a cut could split a character in half. If you want it to count by code point, I can switch it to `Array.from`.\n- **`max <= 0` returns an empty string.** Without that check, a `max` of 0 would return `'…'`, which is one character too many."
 }

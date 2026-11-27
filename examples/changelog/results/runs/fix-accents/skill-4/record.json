@@ -44,11 +44,7 @@
     "linesAdded": 7,
     "linesRemoved": 0
   },
-  "files": [
-    "CHANGELOG.md",
-    "src/index.js",
-    "test/index.test.js"
-  ],
+  "files": ["CHANGELOG.md", "src/index.js", "test/index.test.js"],
   "logDir": "runs/fix-accents/skill-4",
   "finalMessage": "`slugify(\"Crème brûlée\")` now returns `\"creme-brulee\"`. The test suite passes, including a new assertion for that case.\n\nThe fix is in `src/index.js`. The function decomposes accented characters (NFD) and removes the combining marks before lowercasing and replacing non-alphanumerics. The old regex was turning each accented letter into a dash, which is where `cr-me-br-l-e` came from.\n\nI also made two other changes:\n- **`test/index.test.js`**: added `assert.equal(slugify('Crème brûlée'), 'creme-brulee')`.\n- **`CHANGELOG.md`**: added a \"Fixed\" entry under `[Unreleased]`, since the repo's changelog skill asks for entries when behavior changes.\n\nNothing is committed. Say if you want me to commit this."
 }

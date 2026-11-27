@@ -44,10 +44,7 @@
     "linesAdded": 3,
     "linesRemoved": 0
   },
-  "files": [
-    "src/index.js",
-    "test/index.test.js"
-  ],
+  "files": ["src/index.js", "test/index.test.js"],
   "logDir": "runs/fix-accents/baseline-4",
   "finalMessage": "`slugify(\"Crème brûlée\")` now returns `\"creme-brulee\"`.\n\nThe fix is in `src/index.js`. `slugify` normalizes the input to NFD, which splits accented letters into a base letter plus a combining mark, and then removes the combining marks. The existing separator regex then sees plain letters. I also added the `\"Crème brûlée\"` case to `test/index.test.js`.\n\nThe test file passes (2/2), and the output matches the expected value. A broader `node --test test/` run failed, but that was because I passed the directory path, which Node tried to load as a file. Running the test file directly is the valid check.\n\nI did not commit anything."
 }

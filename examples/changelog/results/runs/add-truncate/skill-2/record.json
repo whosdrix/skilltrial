@@ -54,11 +54,7 @@
     "linesAdded": 20,
     "linesRemoved": 1
   },
-  "files": [
-    "CHANGELOG.md",
-    "src/index.js",
-    "test/index.test.js"
-  ],
+  "files": ["CHANGELOG.md", "src/index.js", "test/index.test.js"],
   "logDir": "runs/add-truncate/skill-2",
   "finalMessage": "I added `truncate(text, max)` to `src/index.js` and exported it. The test suite passes, including a new `truncate` test.\n\n```js\nexport function truncate(text, max) {\n  if (text.length <= max) return text\n  if (max <= 0) return ''\n  return text.slice(0, max - 1) + '…'\n}\n```\n\n- **Short text:** if `text` is already `max` characters or fewer, it is returned unchanged.\n- **Long text:** it is cut to `max - 1` characters and \"…\" is appended, so the result is exactly `max` characters.\n- **Edge cases I chose:** `max` of 0 or less returns an empty string, and `max` of 1 returns just \"…\".\n\nBeyond the function itself, I made two additions you didn't ask for:\n- A `truncate` case in `test/index.test.js`.\n- An \"Added\" entry under `[Unreleased]` in `CHANGELOG.md`, since the project keeps one.\n\nNothing is committed. \"Length\" means UTF-16 code units, so an emoji or other character outside the Basic Multilingual Plane counts as 2 and could be split at the cut. Tell me if you want grapheme-aware truncation."
 }

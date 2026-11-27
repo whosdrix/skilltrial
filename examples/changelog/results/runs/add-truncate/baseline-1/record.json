@@ -54,9 +54,7 @@
     "linesAdded": 6,
     "linesRemoved": 0
   },
-  "files": [
-    "src/index.js"
-  ],
+  "files": ["src/index.js"],
   "logDir": "runs/add-truncate/baseline-1",
   "finalMessage": "I added `truncate(text, max)` to `src/index.js` and exported it. I ran it on a few cases and the output matches the spec; I did not commit anything.\n\n```js\nexport function truncate(text, max) {\n  if (text.length <= max) return text\n  if (max <= 0) return ''\n  return text.slice(0, max - 1) + '…'\n}\n```\n\n- **Short enough:** text of length `max` or less is returned unchanged.\n- **Too long:** the result is `max - 1` characters plus `…`, so it is exactly `max` characters.\n- **Edge cases I chose:** when `max` is 0 or negative there is no room for the ellipsis, so it returns `''`. When `max` is 1 it returns just `…`.\n\nLength is counted in JavaScript string units (`.length`), which matches how the rest of the file works. Characters outside the Basic Multilingual Plane, such as most emoji, count as two units, so they could be split in the middle. Say if you want code-point-aware truncation instead."
 }

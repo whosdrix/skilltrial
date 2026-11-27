@@ -44,11 +44,7 @@
     "linesAdded": 7,
     "linesRemoved": 0
   },
-  "files": [
-    "CHANGELOG.md",
-    "src/index.js",
-    "test/index.test.js"
-  ],
+  "files": ["CHANGELOG.md", "src/index.js", "test/index.test.js"],
   "logDir": "runs/fix-accents/skill-1",
   "finalMessage": "`slugify(\"Crème brûlée\")` now returns `\"creme-brulee\"`. The test suite passes (2/2), including a new assertion for that input.\n\nThe fix is in `src/index.js`: the input is decomposed with `normalize('NFD')` and the combining accent marks are removed before lowercasing and replacing non-alphanumerics. I also added the case to `test/index.test.js` and a `### Fixed` entry under `[Unreleased]` in `CHANGELOG.md`, per the project's changelog skill.\n\nI didn't commit anything. Let me know if you want a commit made."
 }
